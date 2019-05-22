@@ -235,11 +235,13 @@ class PlayerEventProducer: NSObject, EventProducer {
     /// - Parameter note: The notification information.
     @objc fileprivate func audioSessionGotInterrupted(note: NSNotification) {
         if let userInfo = note.userInfo,
-            let type = userInfo[AVAudioSessionInterruptionTypeKey] as? AVAudioSession.InterruptionType {
+            let typeRawValue = userInfo[AVAudioSessionInterruptionTypeKey] as? AVAudioSession.InterruptionType.RawValue {
+            let type = AVAudioSession.InterruptionType(rawValue: typeRawValue)
             if type == .began {
                 eventListener?.onEvent(PlayerEvent.interruptionBegan, generetedBy: self)
             } else {
-                if let options = userInfo[AVAudioSessionInterruptionOptionKey] as? AVAudioSession.InterruptionOptions {
+                if let optionsRawValue = userInfo[AVAudioSessionInterruptionOptionKey] as? AVAudioSession.InterruptionOptions.RawValue {
+                    let options = AVAudioSession.InterruptionOptions(rawValue: optionsRawValue)
                     eventListener?.onEvent(
                         PlayerEvent.interruptionEnded(shouldResume: options.contains(.shouldResume)),
                         generetedBy: self
