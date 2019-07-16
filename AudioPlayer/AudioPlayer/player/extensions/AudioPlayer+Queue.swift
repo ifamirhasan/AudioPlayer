@@ -72,6 +72,17 @@ extension AudioPlayer {
             play(items: items)
         }
     }
+    
+    /// Inserts an item to the queue at the specific index.
+    ///
+    /// - Parameters:
+    ///   - item: The item to insert to the queue.
+    ///   - index: The index of the item to add.
+    public func insert(item: AudioItem, at index: Int) {
+        if let queue = queue {
+            queue.insert(item: item, at: index)
+        }
+    }
 
     /// Removes an item at a specific index in the queue.
     ///

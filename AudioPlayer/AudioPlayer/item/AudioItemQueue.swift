@@ -212,6 +212,18 @@ class AudioItemQueue {
         self.items.append(contentsOf: items)
         self.queue.append(contentsOf: items)
     }
+    
+    /// Inserts an item to the queue at the specific index.
+    ///
+    /// - Parameters:
+    ///   - item: The item to insert to the queue.
+    ///   - index: The index of the item to add.
+    func insert(item: AudioItem, at index: Int) {
+        if items.count >= index && queue.count >= index && index >= 0 {
+            self.items.insert(item, at: index)
+            self.queue.insert(item, at: index)
+        }
+    }
 
     /// Removes an item from the queue.
     ///
