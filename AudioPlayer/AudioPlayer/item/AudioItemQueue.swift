@@ -118,64 +118,36 @@ class AudioItemQueue {
     ///
     /// - Returns: The next item in the queue.
     func nextItem() -> AudioItem? {
-//        //Early exit if queue is empty
-//        guard !queue.isEmpty else {
-//            return nil
-//        }
-//
-//        if mode.contains(.repeat) {
-//            //No matter if we should still consider this item, the repeat mode will return the current item.
-//            let item = queue[nextPosition]
-//            historic.append(item)
-//            return item
-//        }
-//
-//        if mode.contains(.repeatAll) && nextPosition >= queue.count {
-//            nextPosition = 0
-//        }
-//
-//        while nextPosition < queue.count {
-//            let item = queue[nextPosition]
-//            nextPosition += 1
-//
-//            if shouldConsiderItem(item: item) {
-//                historic.append(item)
-//                return item
-//            }
-//        }
-//
-//        if mode.contains(.repeatAll) && nextPosition >= queue.count {
-//            nextPosition = 0
-//        }
-//        return nil
-        
-        // I take it from old source
+        //Early exit if queue is empty
         guard !queue.isEmpty else {
             return nil
         }
-        
-        let previousPosition = nextPosition - 1
-        
+
         if mode.contains(.repeat) {
-            let position = max(previousPosition, 0)
-            let item = queue[position]
+            //No matter if we should still consider this item, the repeat mode will return the current item.
+            let item = queue[nextPosition]
             historic.append(item)
             return item
         }
-        
-        if previousPosition > 0 {
-            let item = queue[previousPosition - 1]
-            nextPosition = previousPosition
-            historic.append(item)
-            return item
+
+        if mode.contains(.repeatAll) && nextPosition >= queue.count {
+            nextPosition = 0
         }
-        
-        if mode.contains(.repeatAll) {
-            nextPosition = queue.count + 1
-            return previousItem()
+
+        while nextPosition < queue.count {
+            let item = queue[nextPosition]
+            nextPosition += 1
+
+            if shouldConsiderItem(item: item) {
+                historic.append(item)
+                return item
+            }
+        }
+
+        if mode.contains(.repeatAll) && nextPosition >= queue.count {
+            nextPosition = 0
         }
         return nil
-        
     }
 
     /// A boolean value indicating whether the queue has a next item to play or not.
