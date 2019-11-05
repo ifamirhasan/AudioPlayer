@@ -163,35 +163,62 @@ class AudioItemQueue {
     ///
     /// - Returns: The previous item in the queue.
     func previousItem() -> AudioItem? {
-        //Early exit if queue is empty
+//        //Early exit if queue is empty
+//        guard !queue.isEmpty else {
+//            return nil
+//        }
+//
+//        if mode.contains(.repeat) {
+//            //No matter if we should still consider this item, the repeat mode will return the current item.
+//            let item = queue[max(0, nextPosition - 1)]
+//            historic.append(item)
+//            return item
+//        }
+//
+//        if mode.contains(.repeatAll) && nextPosition <= 0 {
+//            nextPosition = queue.count
+//        }
+//
+//        while nextPosition > 0 {
+//            let previousPosition = nextPosition - 1
+//            nextPosition = previousPosition
+//            let item = queue[previousPosition]
+//
+//            if shouldConsiderItem(item: item) {
+//                historic.append(item)
+//                return item
+//            }
+//        }
+//
+//        if mode.contains(.repeatAll) && nextPosition <= 0 {
+//            nextPosition = queue.count
+//        }
+//        return nil
+        
+        // Amirhasan's changes
         guard !queue.isEmpty else {
             return nil
         }
-
+        
+        let previousPosition = nextPosition - 1
+        
         if mode.contains(.repeat) {
-            //No matter if we should still consider this item, the repeat mode will return the current item.
-            let item = queue[max(0, nextPosition - 1)]
+            let position = max(previousPosition, 0)
+            let item = queue[position]
             historic.append(item)
             return item
         }
-
-        if mode.contains(.repeatAll) && nextPosition <= 0 {
-            nextPosition = queue.count
-        }
-
-        while nextPosition > 0 {
-            let previousPosition = nextPosition - 1
+        
+        if previousPosition > 0 {
+            let item = queue[previousPosition - 1]
             nextPosition = previousPosition
-            let item = queue[previousPosition]
-
-            if shouldConsiderItem(item: item) {
-                historic.append(item)
-                return item
-            }
+            historic.append(item)
+            return item
         }
-
-        if mode.contains(.repeatAll) && nextPosition <= 0 {
-            nextPosition = queue.count
+        
+        if mode.contains(.repeatAll) {
+            nextPosition = queue.count + 1
+            return previousItem()
         }
         return nil
     }
