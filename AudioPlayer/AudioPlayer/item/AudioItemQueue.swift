@@ -253,6 +253,9 @@ class AudioItemQueue {
         if items.count >= index && queue.count >= index && index >= 0 {
             self.items.insert(item, at: index)
             self.queue.insert(item, at: index)
+            if self.nextPosition > index {
+                self.nextPosition += 1
+            }
         }
     }
 
@@ -263,6 +266,9 @@ class AudioItemQueue {
         let item = queue.remove(at: index)
         if let index = items.firstIndex(of: item) {
             items.remove(at: index)
+            if self.nextPosition > index {
+                self.nextPosition -= 1
+            }
         }
     }
 
