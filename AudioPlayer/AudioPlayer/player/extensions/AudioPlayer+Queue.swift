@@ -53,6 +53,18 @@ extension AudioPlayer {
         }
     }
 
+    public func replace(items: [AudioItem]) {
+        if !items.isEmpty {
+            queue = AudioItemQueue(items: items, mode: mode)
+            queue?.delegate = self
+            if mode.contains(.repeat) {
+                queue?.nextPosition = 0
+            } else {
+                queue?.nextPosition = 1
+            }
+        }
+    }
+    
     /// Adds an item at the end of the queue. If queue is empty and player isn't playing, the behaviour will be similar
     /// to `play(item:)`.
     ///
