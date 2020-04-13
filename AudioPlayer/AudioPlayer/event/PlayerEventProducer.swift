@@ -256,7 +256,10 @@ class PlayerEventProducer: NSObject, EventProducer {
     ///
     /// - Parameter note: The notification information.
     @objc fileprivate func audioSessionRouteChanged(note: NSNotification) {
-        eventListener?.onEvent(PlayerEvent.routeChanged, generetedBy: self)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.eventListener?.onEvent(PlayerEvent.routeChanged, generetedBy: self)
+        }
     }
 
     /// Audio session got messed up (media services lost or reset). We gotta reactive the audio session and reset
