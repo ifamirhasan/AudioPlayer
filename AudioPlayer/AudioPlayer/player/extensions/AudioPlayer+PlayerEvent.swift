@@ -86,7 +86,7 @@ extension AudioPlayer {
 
         case .readyToPlay:
             //There is enough data in the buffer
-            if shouldResumePlaying {
+            if true {
                 stateBeforeBuffering = nil
                 state = .playing
                 player?.rate = rate
