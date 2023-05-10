@@ -20,7 +20,8 @@ extension AudioPlayer {
             if let error = error {
                 state = .failed(.foundationError(error))
             } else {
-                nextOrStop()
+//                nextOrStop()
+                nextOrEnd()
             }
 
         case .interruptionBegan where state.isPlaying || state.isBuffering:
@@ -85,7 +86,7 @@ extension AudioPlayer {
 
         case .readyToPlay:
             //There is enough data in the buffer
-            if shouldResumePlaying {
+            if true {
                 stateBeforeBuffering = nil
                 state = .playing
                 player?.rate = rate

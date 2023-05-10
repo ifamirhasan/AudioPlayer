@@ -99,6 +99,10 @@ class AudioItemQueue {
         if oldMode.contains(.repeat) && !mode.contains(.repeat) && historic.last == queue[nextPosition] {
             nextPosition += 1
         } else if !oldMode.contains(.repeat) && mode.contains(.repeat) && nextPosition == queue.count {
+//            nextPosition -= 1
+        }
+        
+        if mode.contains(.repeat) {
             nextPosition -= 1
         }
 
@@ -163,35 +167,62 @@ class AudioItemQueue {
     ///
     /// - Returns: The previous item in the queue.
     func previousItem() -> AudioItem? {
-        //Early exit if queue is empty
+//        //Early exit if queue is empty
+//        guard !queue.isEmpty else {
+//            return nil
+//        }
+//
+//        if mode.contains(.repeat) {
+//            //No matter if we should still consider this item, the repeat mode will return the current item.
+//            let item = queue[max(0, nextPosition - 1)]
+//            historic.append(item)
+//            return item
+//        }
+//
+//        if mode.contains(.repeatAll) && nextPosition <= 0 {
+//            nextPosition = queue.count
+//        }
+//
+//        while nextPosition > 0 {
+//            let previousPosition = nextPosition - 1
+//            nextPosition = previousPosition
+//            let item = queue[previousPosition]
+//
+//            if shouldConsiderItem(item: item) {
+//                historic.append(item)
+//                return item
+//            }
+//        }
+//
+//        if mode.contains(.repeatAll) && nextPosition <= 0 {
+//            nextPosition = queue.count
+//        }
+//        return nil
+        
+        // Amirhasan's changes
         guard !queue.isEmpty else {
             return nil
         }
-
+        
+        let previousPosition = nextPosition - 1
+        
         if mode.contains(.repeat) {
-            //No matter if we should still consider this item, the repeat mode will return the current item.
-            let item = queue[max(0, nextPosition - 1)]
+            let position = max(previousPosition, 0)
+            let item = queue[position]
             historic.append(item)
             return item
         }
-
-        if mode.contains(.repeatAll) && nextPosition <= 0 {
-            nextPosition = queue.count
-        }
-
-        while nextPosition > 0 {
-            let previousPosition = nextPosition - 1
+        
+        if previousPosition > 0 {
+            let item = queue[previousPosition - 1]
             nextPosition = previousPosition
-            let item = queue[previousPosition]
-
-            if shouldConsiderItem(item: item) {
-                historic.append(item)
-                return item
-            }
+            historic.append(item)
+            return item
         }
-
-        if mode.contains(.repeatAll) && nextPosition <= 0 {
-            nextPosition = queue.count
+        
+        if mode.contains(.repeatAll) {
+            nextPosition = queue.count + 1
+            return previousItem()
         }
         return nil
     }
@@ -212,6 +243,21 @@ class AudioItemQueue {
         self.items.append(contentsOf: items)
         self.queue.append(contentsOf: items)
     }
+    
+    /// Inserts an item to the queue at the specific index.
+    ///
+    /// - Parameters:
+    ///   - item: The item to insert to the queue.
+    ///   - index: The index of the item to add.
+    func insert(item: AudioItem, at index: Int) {
+        if items.count >= index && queue.count >= index && index >= 0 {
+            self.items.insert(item, at: index)
+            self.queue.insert(item, at: index)
+            if self.nextPosition > index {
+                self.nextPosition += 1
+            }
+        }
+    }
 
     /// Removes an item from the queue.
     ///
@@ -220,6 +266,9 @@ class AudioItemQueue {
         let item = queue.remove(at: index)
         if let index = items.firstIndex(of: item) {
             items.remove(at: index)
+            if self.nextPosition > index {
+                self.nextPosition -= 1
+            }
         }
     }
 

@@ -314,7 +314,7 @@ public class AudioPlayer: NSObject {
     var qualityIsBeingChanged = false
 
     /// The state before the player went into .Buffering. It helps to know whether to restart or not the player.
-    var stateBeforeBuffering: AudioPlayerState?
+    public var stateBeforeBuffering: AudioPlayerState?
 
     /// The state of the player when the connection was lost
     var stateWhenConnectionLost: AudioPlayerState?
@@ -341,7 +341,7 @@ public class AudioPlayer: NSObject {
     // MARK: Utility methods
 
     /// Updates the MPNowPlayingInfoCenter with current item's info.
-    func updateNowPlayingInfoCenter() {
+    public func updateNowPlayingInfoCenter() {
         #if os(iOS) || os(tvOS)
             if let item = currentItem {
                 MPNowPlayingInfoCenter.default().ap_update(
