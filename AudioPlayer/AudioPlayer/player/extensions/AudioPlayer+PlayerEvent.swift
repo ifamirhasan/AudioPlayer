@@ -15,6 +15,8 @@ extension AudioPlayer {
     ///   - producer: The event producer that generated the player event.
     ///   - event: The player event.
     func handlePlayerEvent(from producer: EventProducer, with event: PlayerEventProducer.PlayerEvent) {
+//        print(#function, event)
+//        print(#function, state)
         switch event {
         case .endedPlaying(let error):
             if let error = error {
@@ -86,7 +88,7 @@ extension AudioPlayer {
 
         case .readyToPlay:
             //There is enough data in the buffer
-            if true {
+            if shouldResumePlaying {
                 stateBeforeBuffering = nil
                 state = .playing
                 player?.rate = rate

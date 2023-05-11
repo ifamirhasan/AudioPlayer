@@ -53,14 +53,14 @@ extension AudioPlayer {
         }
     }
 
-    public func replace(items: [AudioItem]) {
+    public func replace(items: [AudioItem], playingIndex: Int? = nil) {
         if !items.isEmpty {
             queue = AudioItemQueue(items: items, mode: mode)
             queue?.delegate = self
-            if mode.contains(.repeat) {
-                queue?.nextPosition = 0
+            if let playingIndex, playingIndex < (items.count - 1) {
+                queue?.nextPosition = playingIndex + 1
             } else {
-                queue?.nextPosition = 1
+                queue?.nextPosition = 0
             }
         }
     }
