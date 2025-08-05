@@ -78,6 +78,9 @@ public class AudioPlayer: NSObject {
             }
         }
     }
+    
+    open weak var assetResourceLoaderDelegate: AVAssetResourceLoaderDelegate?
+    open var userAgent: String?
 
     /// The current item being played.
     public internal(set) var currentItem: AudioItem? {
@@ -106,7 +109,15 @@ public class AudioPlayer: NSObject {
                 pausedForInterruption = false
                 
                 //Create new AVPlayerItem
-                let playerItem = AVPlayerItem(url: info.url)
+                var options: [String: Any]?
+                if let userAgent {
+                    options = ["AVURLAssetHTTPHeaderFieldsKey": ["User-Agent": userAgent]]
+                }
+                let asset = AVURLAsset(url: info.url, options: options)
+                if let assetResourceLoaderDelegate {
+                    asset.resourceLoader.setDelegate(assetResourceLoaderDelegate, queue: .main)
+                }
+                let playerItem = AVPlayerItem(asset: asset)
                 
                 if #available(iOS 10.0, tvOS 10.0, OSX 10.12, *) {
                     playerItem.preferredForwardBufferDuration = self.preferredForwardBufferDuration
